@@ -5,13 +5,16 @@ import com.stoom.backend.entity.Address;
 import com.stoom.backend.exception.ApplicationException;
 import com.stoom.backend.response.Response;
 import com.stoom.backend.service.AddressService;
+import com.stoom.backend.validation.AddressValidation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -27,10 +30,20 @@ import java.util.Optional;
 @RequestMapping("/api")
 public class AddressController {
 
+    private AddressService addressService;
+
     private static final Logger log = LoggerFactory.getLogger(AddressController.class);
 
+    @InitBinder
+    protected void initBinder(WebDataBinder binder) {
+        binder.addValidators(new AddressValidation());
+    }
+
+
     @Autowired
-    private AddressService addressService;
+    public AddressController(AddressService addressService){
+        this.addressService = addressService;
+    }
 
     /**
      * Returns all registered addresses
