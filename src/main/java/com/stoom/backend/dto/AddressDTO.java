@@ -18,6 +18,6 @@ public class AddressDTO {
     private String state;
     private String country;
     private Long zipCode;
-    private Long latitude;
-    private Long longitude;
+    private String latitude;
+    private String longitude;
 }

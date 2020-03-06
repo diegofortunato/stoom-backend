@@ -5,16 +5,14 @@ import com.stoom.backend.entity.Address;
 import com.stoom.backend.exception.ApplicationException;
 import com.stoom.backend.response.Response;
 import com.stoom.backend.service.AddressService;
-import com.stoom.backend.validation.AddressValidation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -33,12 +31,6 @@ public class AddressController {
     private AddressService addressService;
 
     private static final Logger log = LoggerFactory.getLogger(AddressController.class);
-
-    @InitBinder
-    protected void initBinder(WebDataBinder binder) {
-        binder.addValidators(new AddressValidation());
-    }
-
 
     @Autowired
     public AddressController(AddressService addressService){
@@ -96,7 +88,8 @@ public class AddressController {
      * @return ResponseEntity<Response<AddressDto>>
      */
     @PostMapping(value = "/address")
-    public ResponseEntity<Response<AddressDTO>> createAddress(@Valid @RequestBody Address address) throws ApplicationException {
+    public ResponseEntity<Response<AddressDTO>> createAddress(@Valid @RequestBody Address address)
+            throws ApplicationException, MethodArgumentNotValidException {
         log.info("Create new address: {}", address.toString());
         Response<AddressDTO> response = new Response<AddressDTO>();
         try {

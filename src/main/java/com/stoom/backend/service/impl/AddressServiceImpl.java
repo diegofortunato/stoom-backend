@@ -3,6 +3,8 @@ package com.stoom.backend.service.impl;
 import com.stoom.backend.converter.ConverterHelper;
 import com.stoom.backend.dto.AddressDTO;
 import com.stoom.backend.entity.Address;
+import com.stoom.backend.exception.ApplicationException;
+import com.stoom.backend.request.CoordinatesRequest;
 import com.stoom.backend.repository.AddressRepository;
 import com.stoom.backend.service.AddressService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +16,9 @@ import java.util.stream.Collectors;
 
 @Service
 public class AddressServiceImpl implements AddressService {
+
+    @Autowired
+    private CoordinatesRequest coordinatesRequest;
 
     @Autowired
     private AddressRepository addressRepository;
@@ -33,16 +38,18 @@ public class AddressServiceImpl implements AddressService {
     }
 
     @Override
-    public Optional<AddressDTO> createAddress(Address address) {
+    public Optional<AddressDTO> createAddress(Address address) throws ApplicationException {
+        address = verifyCoordinates(address);
         Address addressBD = addressRepository.save(address);
         return Optional.of(ConverterHelper.convertAddressToDTO(addressBD));
     }
 
     @Override
-    public Optional<AddressDTO> updateAddress(Address address, Long id) {
+    public Optional<AddressDTO> updateAddress(Address address, Long id) throws ApplicationException {
         Optional<Address> addressBD = addressRepository.findById(id);
         if(addressBD.isPresent()){
             address = ConverterHelper.convertAddressDTOToEntity(address, addressBD.get());
+            address = verifyCoordinates(address);
             address = addressRepository.save(address);
             return Optional.of(ConverterHelper.convertAddressToDTO(address));
         }else{
@@ -59,5 +66,12 @@ public class AddressServiceImpl implements AddressService {
         }else{
             return Optional.empty();
         }
+    }
+
+    private Address verifyCoordinates(Address address) throws ApplicationException {
+        if (address.getLongitude() == null && address.getLatitude() == null) {
+            address = coordinatesRequest.getCoordinatesAddress(address);
+        }
+        return address;
     }
 }

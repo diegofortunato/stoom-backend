@@ -11,6 +11,7 @@ import org.mockito.Mockito;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.ArrayList;
@@ -33,7 +34,7 @@ public class AddressControllerTest {
     }
 
     @Test
-    public void getAllAddressTest() throws ApplicationException {
+    public void getAllAddressTest() throws ApplicationException, MethodArgumentNotValidException {
         ResponseEntity response = createAddressRequest(1L);
         assertEquals(HttpStatus.OK, response.getStatusCode());
         ResponseEntity responseEntity = getAllAddressRequest();
@@ -41,7 +42,7 @@ public class AddressControllerTest {
     }
 
     @Test
-    public void getOneAddressTest() throws ApplicationException {
+    public void getOneAddressTest() throws ApplicationException, MethodArgumentNotValidException {
         ResponseEntity response = createAddressRequest(1L);
         assertEquals(HttpStatus.OK, response.getStatusCode());
         ResponseEntity responseEntity = getOneAddressRequest(1L);
@@ -49,13 +50,13 @@ public class AddressControllerTest {
     }
 
     @Test
-    public void createAddressTest() throws ApplicationException {
+    public void createAddressTest() throws ApplicationException, MethodArgumentNotValidException {
         final ResponseEntity response = createAddressRequest(1L);
         assertEquals(HttpStatus.OK, response.getStatusCode());
     }
 
     @Test
-    public void updateAddressTest() throws ApplicationException {
+    public void updateAddressTest() throws ApplicationException, MethodArgumentNotValidException {
         ResponseEntity response = createAddressRequest(1L);
         assertEquals(HttpStatus.OK, response.getStatusCode());
         response = updateAddressRequest(1L);
@@ -63,14 +64,14 @@ public class AddressControllerTest {
     }
 
     @Test
-    public void deleteAddressTest() throws ApplicationException {
+    public void deleteAddressTest() throws ApplicationException, MethodArgumentNotValidException {
         ResponseEntity response = createAddressRequest(1L);
         assertEquals(HttpStatus.OK, response.getStatusCode());
         response = deleteAddressRequest(1L);
         assertEquals(HttpStatus.OK, response.getStatusCode());
     }
 
-    private ResponseEntity createAddressRequest(Long id) throws ApplicationException {
+    private ResponseEntity createAddressRequest(Long id) throws ApplicationException, MethodArgumentNotValidException {
         Address params = new Address();
         final AtomicReference<Address> atomicAgeParams = new AtomicReference<>();
         Mockito.doAnswer(invocationOnMock -> {
