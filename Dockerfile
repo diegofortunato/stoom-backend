@@ -1,9 +1,9 @@
-FROM openjdk:8-jdk-alpine
+FROM java:8-jdk-alpine
 
-ARG JAR_FILE=target/stoom-backend.jar
+COPY ./target/stoom-backend.jar /build/
 
-WORKDIR /opt/app
+WORKDIR /build/
 
-COPY ${JAR_FILE} app.jar
+RUN sh -c 'touch stoom-backend.jar'
 
-ENTRYPOINT ["java","-jar","app.jar"]
+ENTRYPOINT ["java","-jar","stoom-backend.jar"]
